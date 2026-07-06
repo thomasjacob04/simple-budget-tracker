@@ -1,4 +1,4 @@
-import { Analytics } from '@vercel/analytics/next'
+import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from 'next'
 import { Nunito } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
