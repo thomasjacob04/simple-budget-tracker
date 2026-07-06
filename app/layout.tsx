@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Nunito } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
+
 import './globals.css'
 
 const nunito = Nunito({ subsets: ['latin'], variable: '--font-nunito' })
