@@ -47,6 +47,14 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
     (preferences: Preferences) => {
       persist({ preferences, entries: data?.entries ?? [], onboarded: true })
       track("currency_selected", { currency: preferences.currency, source: "onboarding" })
+      fetch("/api/analytics/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currency: preferences.currency,
+          incomeTypes: preferences.incomeTypes,
+        }),
+      }).catch(() => {})
     },
     [data, persist],
   )
