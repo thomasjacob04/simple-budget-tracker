@@ -53,6 +53,9 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({
           currency: preferences.currency,
           incomeTypes: preferences.incomeTypes,
+          goalNames: preferences.savingsGoals
+            .filter((g) => g.name !== "Church")
+            .map((g) => g.name),
         }),
       }).catch(() => {})
     },

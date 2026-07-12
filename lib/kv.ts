@@ -6,4 +6,5 @@ export const ANALYTICS_KEYS = {
   sessions: "analytics:sessions",
   currency: "analytics:currency",
   income: "analytics:income",
+  goals: "analytics:goals",
 }

@@ -48,10 +48,11 @@ export default async function AnalyticsPage() {
     )
   }
 
-  const [sessionsRaw, currencyCounts, incomeCounts] = await Promise.all([
+  const [sessionsRaw, currencyCounts, incomeCounts, goalCounts] = await Promise.all([
     redis.get(ANALYTICS_KEYS.sessions),
     redis.hgetall(ANALYTICS_KEYS.currency),
     redis.hgetall(ANALYTICS_KEYS.income),
+    redis.hgetall(ANALYTICS_KEYS.goals),
   ])
   const sessions = sessionsRaw ? Number(sessionsRaw) : 0
 
@@ -62,6 +63,7 @@ export default async function AnalyticsPage() {
 
   const currencyData = toSortedEntries(currencyCounts)
   const incomeData = toSortedEntries(incomeCounts)
+  const goalData = toSortedEntries(goalCounts)
 
   return (
     <div className="mx-auto w-full max-w-md px-5 pb-28 pt-8">
@@ -105,6 +107,19 @@ export default async function AnalyticsPage() {
           <CardContent>
             {incomeData.length > 0 ? (
               <BarList data={incomeData} />
+            ) : (
+              <p className="text-sm text-muted-foreground">No data yet.</p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Savings goal names</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {goalData.length > 0 ? (
+              <BarList data={goalData} />
             ) : (
               <p className="text-sm text-muted-foreground">No data yet.</p>
             )}

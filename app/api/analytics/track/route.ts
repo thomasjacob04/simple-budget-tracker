@@ -14,6 +14,9 @@ export async function POST(request: Request) {
   const incomeTypes = Array.isArray(body?.incomeTypes)
     ? body.incomeTypes.filter((t: unknown): t is string => typeof t === "string").slice(0, 20)
     : []
+  const goalNames = Array.isArray(body?.goalNames)
+    ? body.goalNames.filter((t: unknown): t is string => typeof t === "string").slice(0, 20)
+    : []
 
   if (!currency || !VALID_CURRENCIES.has(currency)) {
     return NextResponse.json({ ok: false, error: "invalid currency" }, { status: 400 })
@@ -26,6 +29,10 @@ export async function POST(request: Request) {
   for (const type of incomeTypes) {
     const trimmed = type.trim().slice(0, 60)
     if (trimmed) ops.push(redis.hincrby(ANALYTICS_KEYS.income, trimmed, 1))
+  }
+  for (const name of goalNames) {
+    const trimmed = name.trim().slice(0, 60)
+    if (trimmed) ops.push(redis.hincrby(ANALYTICS_KEYS.goals, trimmed, 1))
   }
   await Promise.all(ops)
 
