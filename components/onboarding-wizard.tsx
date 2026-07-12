@@ -1,10 +1,27 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, ArrowRight, Check, PiggyBank, Wallet, TrendingUp } from "lucide-react"
+import {
+  ArrowLeft,
+  ArrowRight,
+  Banknote,
+  Check,
+  PiggyBank,
+  Wallet,
+  TrendingUp,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useBudget } from "@/lib/budget-context"
 import {
+  CURRENCIES,
   DEFAULT_EXPENSE_CATEGORIES,
   DEFAULT_INCOME_TYPES,
   type Preferences,
@@ -16,6 +33,7 @@ const STEPS = [
   { title: "Income sources", icon: TrendingUp, hint: "How does money come in?" },
   { title: "Expense categories", icon: Wallet, hint: "Where does money go?" },
   { title: "Savings goals", icon: PiggyBank, hint: "What are you saving for?" },
+  { title: "Currency", icon: Banknote, hint: "What currency do you budget in?" },
 ]
 
 export function OnboardingWizard() {
@@ -30,11 +48,13 @@ export function OnboardingWizard() {
     ...DEFAULT_EXPENSE_CATEGORIES,
   ])
   const [goalNames, setGoalNames] = useState<string[]>(["Goal #1", "Goal #2"])
+  const [currency, setCurrency] = useState("AUD")
 
   const canContinue =
     (step === 0 && incomeTypes.length > 0) ||
     (step === 1 && expenseCategories.length > 0) ||
-    step === 2
+    step === 2 ||
+    step === 3
 
   function finish() {
     const savingsGoals = [
@@ -48,7 +68,7 @@ export function OnboardingWizard() {
       incomeTypes,
       expenseCategories,
       savingsGoals,
-      currency: "AUD",
+      currency,
     }
     completeOnboarding(prefs)
   }
@@ -107,6 +127,25 @@ export function OnboardingWizard() {
         )}
         {step === 2 && (
           <SavingsGoalsField names={goalNames} onChange={setGoalNames} />
+        )}
+        {step === 3 && (
+          <div className="flex flex-col gap-1.5">
+            <Label className="sr-only" htmlFor="onboarding-currency">
+              Currency
+            </Label>
+            <Select value={currency} onValueChange={(v) => setCurrency(v ?? "AUD")}>
+              <SelectTrigger id="onboarding-currency" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CURRENCIES.map((c) => (
+                  <SelectItem key={c.code} value={c.code}>
+                    {c.symbol} {c.label} ({c.code})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         )}
       </div>
 

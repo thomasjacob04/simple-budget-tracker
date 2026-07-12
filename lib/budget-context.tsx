@@ -8,6 +8,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react"
+import { track } from "@vercel/analytics"
 import type { BudgetData, Entry, Preferences } from "./types"
 import { clearData, generateId, loadData, saveData } from "./storage"
 
@@ -45,6 +46,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
   const completeOnboarding = useCallback(
     (preferences: Preferences) => {
       persist({ preferences, entries: data?.entries ?? [], onboarded: true })
+      track("currency_selected", { currency: preferences.currency, source: "onboarding" })
     },
     [data, persist],
   )
@@ -52,6 +54,9 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
   const updatePreferences = useCallback(
     (preferences: Preferences) => {
       if (!data) return
+      if (preferences.currency !== data.preferences.currency) {
+        track("currency_selected", { currency: preferences.currency, source: "settings" })
+      }
       persist({ ...data, preferences })
     },
     [data, persist],
