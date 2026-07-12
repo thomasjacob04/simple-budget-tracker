@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
+export const dynamic = "force-dynamic"
+
 function BarList({ data }: { data: Array<[string, number]> }) {
   const max = Math.max(1, ...data.map(([, count]) => count))
   return (
